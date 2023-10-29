@@ -1,10 +1,14 @@
 const vscode = require('vscode');
 const axios = require('axios');
+const azkar = require('./azkar.json');
 
 const showModal = async (popup) => {
   const response = await axios.get(
     'https://azkar-api.nawafhq.repl.co/zekr?t&json'
-  );
+  ).catch((error) => {
+    console.info("Using local azkar")
+    return azkar[Math.floor(Math.random() * azkar.length)];
+  });
   const zikr = response.data;
   if (popup == 'middle') {
     vscode.window.showInformationMessage(zikr.content, {
@@ -35,7 +39,7 @@ async function activate(context) {
   context.subscriptions.push(show);
 }
 
-function deactivate() {}
+function deactivate() { }
 
 module.exports = {
   activate,
